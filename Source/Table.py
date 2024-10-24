@@ -103,12 +103,12 @@ class Table:
 		return table
 	
 	@staticmethod
-	def OpenTSV(path:str, commentChar="!", settingChar="#"):
+	def OpenTSV(path:str, commentChar="!"):
 		"""Read, parse and load a TSV table into a table object from a file path.
 		Comments will be removed, settings loaded and TSV loaded."""
 	
 		# Read lines from filepath
 		lines = open(path).read()
-		table = Table.ParseAndLoadTSV(lines, commentChar, settingChar)
+		table = Table.ParseAndLoadTSV(lines, commentChar)
 	
 		return table
