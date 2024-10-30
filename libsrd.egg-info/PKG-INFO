@@ -1,10 +1,25 @@
 Metadata-Version: 2.1
 Name: libsrd
 Version: 1.0.0
-Summary: A tool that will scan the current directory for specified image types, then will convert them all into another specified format.
+Summary: LibSrd is a library containing modules I use repeatedly.
+Home-page: https://github.com/Samdavis112/libsrd
 Author: Sam Davis
 Author-email: sam076davis@gmail.com
 License-File: LICENSE
 Requires-Dist: pillow
 Requires-Dist: tabulate
 Requires-Dist: pypdf
+
+# LibSrd
+
+## Modules
+image_convert.py  
+merge_pdf.py  
+table.py  
+
+## Commands
+1. ```mergepdfs```  
+Will merge all pdf's found in the current directory, and save the result at: ./Output/MergePdfOutput.pdf  
+  
+2. ```imgconvert {InitalFormat} {FinalFormat}```  
+Will convert all images of InitalFormat in current directory to FinalFormat in ./Output/
