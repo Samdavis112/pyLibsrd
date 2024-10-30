@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
 	name="libsrd",
-	version="1.0.0",
+	version="1.0.2",
 	description="LibSrd is a library containing modules I use repeatedly.",
 	long_description=open("README.md").read(),
 	author="Sam Davis",
