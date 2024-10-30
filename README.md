@@ -7,7 +7,7 @@ table.py
 
 ## Commands
 1. ```mergepdfs```  
-Will merge all pdf's found in the current directory, and save the result at: ./Output/MergePdfOutput.pdf  
+Will merge all pdf's found in the current directory, and save the result at: ./Output/Output.pdf  
   
-2. ```imgconvert {InitalFormat} {FinalFormat}```  
+1. ```imgconvert {InitalFormat} {FinalFormat}```  
 Will convert all images of InitalFormat in current directory to FinalFormat in ./Output/

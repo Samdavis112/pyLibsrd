@@ -10,19 +10,8 @@ def convert_images(InputPath, InitialExtention, FinalExtention):
 	if InitialExtention[0] != '.':
 		InitialExtention = "." + InitialExtention
 
-	# Check the path exists.
-	if not os.path.exists(InputPath):
-		print('The given path does not exist.')
-		return
-
-	# Get all files in folder.
-	files = os.listdir(InputPath)
-	Images = []
-
-	# Get all images in files.
-	for file in files:
-		if InitialExtention.lower() in file.lower():
-			Images.append(file)
+	# Get images of correct type in folder
+	Images = sorted([f for f in os.listdir(InputPath) if f.lower().endswith(InitialExtention.lower())])
 
 	# Abort if no images found.
 	if len(Images) < 1:
@@ -48,3 +37,7 @@ def script():
 	else:
 		print(sys.argv)
 		print("Expected two arguments (InitalExtension, FinalExtension)")
+
+
+if __name__ == "__main__":
+	script()

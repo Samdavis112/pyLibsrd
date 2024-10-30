@@ -60,10 +60,10 @@ class Table:
 		return data
  
 	def write_tsv(self, path):
-		lines = ["\t".join(self.headers)]
+		lines = [f"{"\t".join(self.headers)}\n"]
 
 		for row in self.data:
-			lines.append("\t".join(row))
+			lines.append(f"{"\t".join(row)}\n")
 
 		with open(path, "w+") as f:
 			f.writelines(lines)
@@ -108,7 +108,7 @@ class Table:
 		"""Read, parse and load a TSV table into a table object from a file path.
 		Comments will be removed and TSV loaded."""
 
-		Table = None
+		table = None
 
 		# Read lines from filepath
 		with open(path) as f:
