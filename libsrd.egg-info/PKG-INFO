@@ -1,0 +1,10 @@
+Metadata-Version: 2.1
+Name: libsrd
+Version: 1.0.0
+Summary: A tool that will scan the current directory for specified image types, then will convert them all into another specified format.
+Author: Sam Davis
+Author-email: sam076davis@gmail.com
+License-File: LICENSE
+Requires-Dist: pillow
+Requires-Dist: tabulate
+Requires-Dist: pypdf

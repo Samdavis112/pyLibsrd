@@ -10,27 +10,27 @@ class Table:
 	- Comments are supported, by default they are indicated with ! at the start of a line, but that can be changed.
 	"""
  
-	def __init__(self) -> None:
-		self.Headers:list[str] = []
-		self.Data:list[str] = []
+	def __init__(self):
+		self.headers:list[str] = []
+		self.data:list[str] = []
 	
-	def __str__(self) -> str:
+	def __str__(self):
 		"""Gets the table ready for displaying"""
-		return tabulate.tabulate(self.Data, self.Headers, tablefmt="mixed_outline")
+		return tabulate.tabulate(self.data, self.headers, tablefmt="mixed_outline")
 
-	def GetColIndex(self, colname: str) -> None | int:
+	def get_index(self, colname: str) -> None | int:
 		"""Finds the index of a certain column in a table from its name. Will return None if column isn't found."""
 		colindex = None
 	   
-		for header in self.Headers:
+		for header in self.headers:
 			if header.lower() == colname.lower():
-				colindex = self.Headers.index(header)
+				colindex = self.headers.index(header)
  
 		return colindex
  
-	def ReadColumn(self, colname: str) -> list[str] | None:
+	def get_column(self, colname: str) -> list[str] | None:
 		"""Will return a 1D list representing all the data within a certain column, from its name. Will return None if column not found."""
-		colindex = self.GetColIndex(colname)
+		colindex = self.get_index(colname)
  
 		# return nothing if column not found.
 		if colindex == None:
@@ -39,55 +39,43 @@ class Table:
 		data = []
  
 		# Add data from each row that is in the requested col to a list.
-		for row in self.Data:
+		for row in self.data:
 			data.append(row[colindex].strip())
  
 		return data
    
-	def ReadColumnIndex(self, colindex: int) -> list[str] | None:
+	def get_col(self, colindex: int) -> list[str] | None:
 		"""Will return a 1D list representing all the data within a certain column, from its index. Will return None if column not found."""
  
 		# return nothing if column not found.
-		if colindex > len(self.Headers):
+		if colindex > len(self.headers):
 			return None
  
 		data = []
  
 		# Add data from each row that is in the requested col to a list.
-		for row in self.Data:
+		for row in self.data:
 			data.append(row[colindex].strip())
  
 		return data
  
+	def write_tsv(self, path):
+		lines = ["\t".join(self.headers)]
+
+		for row in self.data:
+			lines.append("\t".join(row))
+
+		with open(path, "w+") as f:
+			f.writelines(lines)
+
 	@staticmethod
-	def ConvertTSVLines(lines:list[str]):
-		"""Just get headers and data from a TSV string list. No comment or settings handling."""
-		headers = []
-		data = []
-		NumHeaders = 0
-	
-		for i in range(len(lines)):
-			lines[i] = lines[i].replace("\n", "")  # Remove newline chars
-			temp = lines[i].split("\t")  # Split by tabs
-	
-			if i == 0:  # If header
-				NumHeaders = len(temp)
-				headers = temp
-			else:
-				# Append blank cols, until column count the same as header
-				while len(temp) < NumHeaders:
-					temp.append("")
-				data.append(temp)
-	
-		return headers, data
-	
-	@staticmethod
-	def ParseAndLoadTSV(Lines: str, commentChar="!"):
+	def read_tsv(Lines: str, commentChar="!"):
 		"""Parse and load a TSV table into a table object from a string.
-		Comments will be removed, settings loaded and TSV loaded."""
+		Comments will be removed and TSV loaded."""
 	
 		table = Table()
-	
+		NumHeaders = 0
+
 		# Remove Comments
 		Lines = re.sub(f"{commentChar}.*?\n", "", Lines)
 	
@@ -98,17 +86,33 @@ class Table:
 		for i in range(len(lines)-1, -1, -1):
 			if "\t" not in lines[i]:
 				lines.remove(lines[i])
+
+		# Go through each line
+		for i in range(len(lines)):
+			lines[i] = lines[i].replace("\n", "")  # Remove newline chars
+			temp = lines[i].split("\t")  # Split by tabs
 	
-		table.Headers, table.Data =  Table.ConvertTSVLines(lines)
+			if i == 0:  # If header line
+				NumHeaders = len(temp)
+				table.headers = temp
+			else:
+				# Append blank cols, until column count the same as header
+				while len(temp) < NumHeaders:
+					temp.append("")
+				table.data.append(temp)
+	
 		return table
 	
 	@staticmethod
-	def OpenTSV(path:str, commentChar="!"):
+	def open_tsv(path:str, commentChar="!"):
 		"""Read, parse and load a TSV table into a table object from a file path.
-		Comments will be removed, settings loaded and TSV loaded."""
-	
+		Comments will be removed and TSV loaded."""
+
+		Table = None
+
 		# Read lines from filepath
-		lines = open(path).read()
-		table = Table.ParseAndLoadTSV(lines, commentChar)
-	
+		with open(path) as f:
+			lines = f.read()
+			table = Table.read_tsv(lines, commentChar)
+
 		return table
