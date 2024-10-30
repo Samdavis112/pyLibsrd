@@ -13,6 +13,7 @@ setup(
 		"tabulate",
 		"pypdf"
 	],
+	url="https://github.com/Samdavis112/libsrd",
 	entry_points={
 		'console_scripts': [
 			'mergepdfs = libsrd.merge_pdf:script',
