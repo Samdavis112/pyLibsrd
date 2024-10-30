@@ -12,4 +12,10 @@ setup(
 		"tabulate",
 		"pypdf"
 	],
+	entry_points={
+		'console_scripts': [
+			'mergepdfs = libsrd.merge_pdf:script',
+			'imgconvert = libsrd.image_convert:script',
+		],
+	},
 )

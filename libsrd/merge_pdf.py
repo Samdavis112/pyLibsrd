@@ -19,17 +19,17 @@ def merge_pdfs(folder_path):
 		writer.append(pdf_path)
 		print(f"Added {pdf_path}")
 
-	output_path = os.path.join(folder_path, 'MergeOutput')
+	output_path = os.path.join(folder_path, 'Output')
 	os.makedirs(output_path, exist_ok=True)
 	
 	# Write out the merged PDF to the specified output path
-	writer.write(os.path.join(output_path, 'Output.pdf'))
+	writer.write(os.path.join(output_path, 'MergePdfOutput.pdf'))
 	writer.close()
 	
 	print(f"All PDFs merged into {output_path}")
 
 
-if __name__ == "__main__":
+def script():
 	folder = os.getcwd()
 	
 	proceed = input(f"Will merge all pdfs found in folder: {folder}\nProceed? (y/n):")
