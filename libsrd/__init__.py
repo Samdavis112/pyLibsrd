@@ -1,7 +1,5 @@
 """
 # LibSrd 
-by Sam Davis
-***
 
 ## Modules
 image_convert.py  

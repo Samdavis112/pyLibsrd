@@ -1,6 +1,4 @@
-# LibSrd 
-by Sam Davis
-***
+# LibSrd
 
 ## Modules
 image_convert.py  
