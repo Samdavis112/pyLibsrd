@@ -2,6 +2,13 @@ import os
 from pypdf import PdfWriter
 
 def merge_pdfs(folder_path):
+	"""
+	Finds all pdf files within ```folder_path``` (single layer), and merges them into a single pdf in ./Output/Output.pdf
+
+	### Parameters:
+	- ```folder_path```: The folder to search.
+	"""
+
 	# Initialize PdfWriter object
 	writer = PdfWriter()
 
@@ -30,9 +37,11 @@ def merge_pdfs(folder_path):
 	print(f"All PDFs merged into {output_path}")
 
 
-def script():
+def _script():
+	"""	Will be called by package if command issued via terminal."""
+
 	folder = os.getcwd()
-	
 	proceed = input(f"Will merge all pdfs found in folder: {folder}\nProceed? (y/n):")
+
 	if proceed.lower() == "y":
 		merge_pdfs(folder)

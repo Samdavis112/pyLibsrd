@@ -17,3 +17,7 @@ Will convert all images of InitalFormat in current directory to FinalFormat in .
 from libsrd.image_convert import convert_images
 from libsrd.merge_pdf import merge_pdfs
 from libsrd.table import Table
+from libsrd.__version__ import __version__
+
+def _script():
+	print(f"LibSrd v{__version__} - Sam Davis")

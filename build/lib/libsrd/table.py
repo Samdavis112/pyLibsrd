@@ -4,9 +4,7 @@ import tabulate
 class Table:
 	"""
 	**Table**
- 
-	A table class for reading data from a tab seperated variable file.
- 
+	A table class for reading data from a tab seperated variable (tsv) file.
 	- Comments are supported, by default they are indicated with ! at the start of a line, but that can be changed.
 	"""
  
@@ -60,6 +58,11 @@ class Table:
 		return data
  
 	def write_tsv(self, path):
+		"""
+		Writes the table to file: ```path```  
+		WARNING: Comments are lost.
+		"""
+		
 		lines = [f"{"\t".join(self.headers)}\n"]
 
 		for row in self.data:
