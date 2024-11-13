@@ -17,7 +17,7 @@ setup(
 	description="LibSrd is a library containing my modules I use repeatedly.",
 	long_description=long_desc,
 	author="Sam Davis",
-	author_email="sam076davis@gmail.com",
+	author_email="srd076@icloud.com",
 	packages=find_packages(),
 	install_requires=[
 		"pillow",
