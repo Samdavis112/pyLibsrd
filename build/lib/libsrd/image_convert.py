@@ -25,7 +25,7 @@ def convert_images(input_path, initial_extension, final_extension):
 		return
 
 	# Create output folder.
-	outputPath = os.path.join(input_path, "Ouput")
+	outputPath = os.path.join(input_path, "Output")
 	os.makedirs(outputPath, exist_ok=True)
 
 	for image in Images:
