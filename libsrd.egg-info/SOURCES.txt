@@ -3,8 +3,11 @@ README
 setup.py
 libsrd/__init__.py
 libsrd/__version__.py
+libsrd/htmlbuilder.py
 libsrd/image_convert.py
+libsrd/markhtml.py
 libsrd/merge_pdf.py
+libsrd/pdf_resizer.py
 libsrd/table.py
 libsrd.egg-info/PKG-INFO
 libsrd.egg-info/SOURCES.txt
@@ -12,4 +15,3 @@ libsrd.egg-info/dependency_links.txt
 libsrd.egg-info/entry_points.txt
 libsrd.egg-info/requires.txt
 libsrd.egg-info/top_level.txt
-tests/tests.py

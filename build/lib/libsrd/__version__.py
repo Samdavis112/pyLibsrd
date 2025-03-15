@@ -3,4 +3,4 @@
 # 2) we can import it in setup.py for the same reason
 # 3) we can import it into the module
 
-__version__ = "1.0.6" # REMEMBER TO UPDATE __init__.py & README
+__version__ = "1.1.0" # REMEMBER TO UPDATE __init__.py & README

@@ -1,9 +1,7 @@
 from setuptools import find_packages, setup
 
-
-# To build:		python setup.py sdist bdist_wheel
+# To build:		python setup.py bdist_wheel
 # To upload:	python -m twine upload dist/*
-
 
 # exec() is a clever function that reads the file to string, then runs that string as python code.
 # This lets me pull the version number on demand.
@@ -30,6 +28,8 @@ setup(
 			'libsrd = libsrd.__init__:_script',
 			'mergepdfs = libsrd.merge_pdf:_script',
 			'imgconvert = libsrd.image_convert:_script',
+            'markhtml = libsrd.markhtml:_script',
+            'pdfresize = libsrd.pdf_resizer:_script'
 		],
 	},
 )

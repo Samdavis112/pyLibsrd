@@ -1,6 +1,8 @@
 from PIL import Image
 import os
 import sys
+import argparse
+
 
 def convert_images(input_path, initial_extension, final_extension):
 	"""

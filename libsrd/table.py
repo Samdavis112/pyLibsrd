@@ -1,22 +1,23 @@
 import re
 import tabulate
  
+
 class Table:
 	"""
-	**Table**
-	A table class for reading data from a tab seperated variable (tsv) file.
+	Table
+	=====
+	- A table class for reading data from a tab seperated variable (tsv) file.
 	- Comments are supported, by default they are indicated with ! at the start of a line, but that can be changed.
 	"""
- 
 	def __init__(self):
-		self.headers:list[str] = []
-		self.data:list[str] = []
+		self.headers = []
+		self.data = []
 	
 	def __str__(self):
 		"""Gets the table ready for displaying"""
 		return tabulate.tabulate(self.data, self.headers, tablefmt="mixed_outline")
 
-	def get_index(self, colname: str) -> None | int:
+	def get_index(self, colname):
 		"""Finds the index of a certain column in a table from its name. Will return None if column isn't found."""
 		colindex = None
 	   
@@ -26,7 +27,7 @@ class Table:
  
 		return colindex
  
-	def get_column(self, colname: str) -> list[str] | None:
+	def get_column(self, colname):
 		"""Will return a 1D list representing all the data within a certain column, from its name. Will return None if column not found."""
 		colindex = self.get_index(colname)
  
@@ -42,7 +43,7 @@ class Table:
  
 		return data
    
-	def get_col(self, colindex: int) -> list[str] | None:
+	def get_col(self, colindex):
 		"""Will return a 1D list representing all the data within a certain column, from its index. Will return None if column not found."""
  
 		# return nothing if column not found.
@@ -63,10 +64,10 @@ class Table:
 		WARNING: Comments are lost.
 		"""
 		
-		lines = [f"{"\t".join(self.headers)}\n"]
+		lines = [f"{'\t'.join(self.headers)}\n"]
 
 		for row in self.data:
-			lines.append(f"{"\t".join(row)}\n")
+			lines.append(f"{'\t'.join(row)}\n")
 
 		with open(path, "w+") as f:
 			f.writelines(lines)
@@ -75,7 +76,6 @@ class Table:
 	def read_tsv(Lines: str, commentChar="!"):
 		"""Parse and load a TSV table into a table object from a string.
 		Comments will be removed and TSV loaded."""
-	
 		table = Table()
 		NumHeaders = 0
 

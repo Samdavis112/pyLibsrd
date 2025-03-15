@@ -1,5 +1,7 @@
 import os
 from pypdf import PdfWriter
+import argparse
+
 
 def merge_pdfs(folder_path):
 	"""
@@ -8,7 +10,6 @@ def merge_pdfs(folder_path):
 	### Parameters:
 	- ```folder_path```: The folder to search.
 	"""
-
 	# Initialize PdfWriter object
 	writer = PdfWriter()
 
@@ -39,7 +40,6 @@ def merge_pdfs(folder_path):
 
 def _script():
 	"""	Will be called by package if command issued via terminal."""
-
 	folder = os.getcwd()
 	proceed = input(f"Will merge all pdfs found in folder: {folder}\nProceed? (y/n):")
 
