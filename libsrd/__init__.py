@@ -18,14 +18,16 @@ Will convert all images of ```InitalFormat``` in current directory to ```FinalFo
 Will convert a markdown file to a html file.  
 
 5. ```pdfresize```  
-Will resize the all pdf'd in folder to a4. 
+Will resize the all pdf's in current directory to a4. 
 """
 
 from libsrd.__version__ import __version__
-from libsrd.table import Table
-from libsrd.merge_pdf import merge_pdfs
-from libsrd.image_convert import convert_images
 from libsrd.htmlbuilder import HtmlBuilder
+from libsrd.image_convert import convert_images
+from libsrd.markhtml import Markdown
+from libsrd.merge_pdf import merge_pdfs
+from libsrd.pdf_resizer import resize_pdfs
+from libsrd.table import Table
 
 
 def _script():

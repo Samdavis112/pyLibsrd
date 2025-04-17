@@ -15,12 +15,21 @@ class HtmlBuilder:
 
     def initaliseHtml(self, Title, headStyles=defaultStyles, styleFilePath="style.css", assetFilePath="Assets/"):
         start = [ 
-            "<!DOCTYPE html>",
-            "<html>","<head>",
-            "<meta charset=\"UTF-8\">",
-            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">",
-            f"<style>{headStyles}</style>",
-            "<script type=\"text/javascript\" async src=\"https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML\"></script>"
+            r'<!DOCTYPE html>',
+            r'<html>"',
+            r'<head>',
+            r'<meta charset="UTF-8">',
+            r'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+            rf'<style>{headStyles}</style>',
+            r'<script>',
+            r'MathJax = {',
+                'loader: {load: [\'[tex]/color\']},',
+                'tex: {packages: {\'[+]\': [\'color\'\]}}',
+            r'};',
+            r'</script>',
+            r'<script type="text/javascript" id="MathJax-script" async',
+            r'src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">',
+            r'</script>'
         ]
 
         self.htmlDocument.append("\n".join(start))
@@ -158,16 +167,3 @@ class HtmlBuilder:
     def WriteHtml(self, path):
         with open(path, "w+") as f:
             f.write(self.GetHtml())
-
-
-if __name__ == "__main__":
-    doc = HtmlBuilder()
-    doc.initaliseHtml("TestDocument")
-    doc.Heading("Test Heading 1", 1)
-    doc.Heading("Test Heading 2", 2)
-    doc.p("This is a very cool paragraph.")
-    doc.hr()
-    doc.p(f"This is another very cool paragraph, with some {HtmlBuilder.b("BOLD")} text!")
-    doc.ol(["Item 1", "Item 2"])
-    doc.table(["Header1", "Header2"], ["l", "c"], [["Test1", "Test2"], ["Test1", "Test2"]])
-    doc.WriteHtml("Output.html")

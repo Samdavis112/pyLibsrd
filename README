@@ -17,7 +17,7 @@ Will convert all images of ```InitalFormat``` in current directory to ```FinalFo
 Will convert a markdown file to a html file.  
 
 5. ```pdfresize```  
-Will resize the all pdf'd in folder to a4.
+Will resize the all pdf's in current directory to a4.
 
 
 Classes
