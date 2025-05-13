@@ -11,10 +11,10 @@ Displays the commands available in libsrd.
 2. ```mergepdfs```  
 Will merge all pdf's found in the current directory, and save the result at: ./Output/Output.pdf  
   
-3. ```imgconvert [InitalFormat] [FinalFormat]```  
+3. ```imgconvert [args]```  
 Will convert all images of ```InitalFormat``` in current directory to ```FinalFormat``` in ./Output/   
 
-4. ```markhtml [InputFile] [Optional: AssetFolder] [Optional: StylesPath]```  
+4. ```markhtml [args]```  
 Will convert a markdown file to a html file.  
 
 5. ```pdfresize```  
@@ -27,7 +27,7 @@ Classes
 A custom TSV reading and writing table class, that can read, write and parse.  
 
 1. HtmlBuilder  
-A very nice html building class, that is used to programatically build html files.  
+A very nice html building class, that is used to programatically build html files.   
 """
 
 from libsrd.__version__ import __version__
