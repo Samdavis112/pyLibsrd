@@ -65,7 +65,6 @@ def _script():
         print("No pdf files found. Aborting.")
         return
     
-
     os.makedirs("Output", exist_ok=True)
     for pdf in pdf_files:
         resize_pdfs_to_a4(pdf, os.path.join("Output", os.path.splitext(pdf)[0] + "[A4].pdf"))

@@ -1,6 +1,5 @@
 import os
 from pypdf import PdfWriter
-import argparse
 
 
 def merge_pdfs(folder_path):

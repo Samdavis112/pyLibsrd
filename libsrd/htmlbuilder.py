@@ -1,55 +1,35 @@
 class HtmlBuilder:
-    defaultStyles = "".join([
-        "* { font-family: Verdana, arial, Helvetica, sans-serif; }",
-        "H1 { font-size: 17pt;}",
-        "H2 { font-size: 13pt;}",
-        "H3 { font-size: 11pt;}",
-        "H4,H5,TH,TD { font-size: 10pt;}",
-        "table { border-collapse: collapse; }",
-        ".nopad { padding:0; margin:0;}",
-        ".centre {margin-left:auto;margin-right:auto;}"
-    ])
-
-    def __init__(self):
+    def __init__(self, DocumentTitle):
         self.htmlDocument = []
+        self.DocumentTitle = DocumentTitle
 
-    def initaliseHtml(self, Title, headStyles=defaultStyles, styleFilePath="style.css", assetFilePath="Assets/"):
-        start = [ 
-            r'<!DOCTYPE html>',
-            r'<html>"',
-            r'<head>',
-            r'<meta charset="UTF-8">',
-            r'<meta name="viewport" content="width=device-width, initial-scale=1.0">',
-            rf'<style>{headStyles}</style>',
-            r'<script>',
-            r'MathJax = {',
-                'loader: {load: [\'[tex]/color\']},',
-                'tex: {packages: {\'[+]\': [\'color\'\]}}',
-            r'};',
-            r'</script>',
-            r'<script type="text/javascript" id="MathJax-script" async',
-            r'src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js">',
-            r'</script>'
-        ]
+    def initaliseHtml(self, styleFilePath=None, assetFilePath=None):
+        self.htmlDocument.append('<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+        self.htmlDocument.append(f"<title>{self.DocumentTitle}</title>")
 
-        self.htmlDocument.append("\n".join(start))
-        self.htmlDocument.append(f"<title>{Title}</title>")
-
-        if styleFilePath != "":
-            self.htmlDocument.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"" + styleFilePath + "\" title=\"DevEng Style\" />")
+        if styleFilePath != None:
+            self.htmlDocument.append(f'<link rel="stylesheet" type="text/css" href="{styleFilePath}" title="DevEng Style"/>')
     
-        if assetFilePath != "":
-            self.htmlDocument.append(f"<base href=\"{assetFilePath}\">")
+        if assetFilePath != None:
+            self.htmlDocument.append(f'<base href="{assetFilePath}">')
 
         self.htmlDocument.append("</head>")
         self.htmlDocument.append("<body>")
     
-    def appendRawText(self, Text):
-        self.htmlDocument.append(Text)
-        self.htmlDocument.append("\n")
+    def ImportMathJax(self):
+        importScript = '<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>'
+        settingsScript = """\nwindow.MathJax = {\n\tloader: {
+        load: ['[tex]/physics', '[tex]/color']\n\t},\n\ttex: {
+        packages: {'[+]': ['physics', 'color']}\n\t}\n};\n"""
+        
+        self.script(settingsScript)
+        self.appendRawText(importScript)
 
-    def comment(self, Comment):
-        self.htmlDocument.append(f"<!--{Comment}-->")
+    def appendRawText(self, text):
+        self.htmlDocument.append(text)
+
+    def comment(self, text):
+        self.htmlDocument.append(f"<!--{text}-->")
 
     @staticmethod
     def convKwargs(**kwargs):
@@ -127,7 +107,7 @@ class HtmlBuilder:
         return (f"<small{HtmlBuilder.convKwargs(**kwargs)}>{text}</small>")
     
     def table(self, ColHeaders, ColAlignments, TableData, **kwargs):
-        self.fixColAlignmets(ColAlignments, len(ColHeaders))
+        self._fixColAlignmets(ColAlignments, len(ColHeaders))
 
         html = f"<table{self.convKwargs(**kwargs)}><thead><tr>"
         for i in range(len(ColHeaders)):
@@ -144,7 +124,7 @@ class HtmlBuilder:
         self.htmlDocument.append(html)
 
     @staticmethod
-    def fixColAlignmets(ColAlignments, numberOfCols):
+    def _fixColAlignmets(ColAlignments, numberOfCols):
         for i in range(numberOfCols):
             if len(ColAlignments) > i:
                 if ColAlignments[i] == "l":

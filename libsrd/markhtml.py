@@ -1,16 +1,18 @@
 import os
-import sys
 import re
 from libsrd import HtmlBuilder
+#from htmlbuilder import HtmlBuilder # <-- For development.
+import argparse
 
 
 class Markdown:
     MultiLineTokens = ["checklist", "ul_item", "ol_item", "blockquote", "table", "paragraph"]
 
-    def __init__(self, path, assetFolderPath="Assets/", stylePath="style.css"):
+    def __init__(self, path, assetFolderPath=None, stylePath=None):
         self.assetFolder = assetFolderPath
         self.stylePath = stylePath
         self.path = path
+        self.FileName_NoExt = os.path.splitext(os.path.basename(self.path))[0]
 
         with open(path, "r") as f:
             self.mdlines = f.readlines()
@@ -60,12 +62,14 @@ class Markdown:
         return tokens
 
     def HtmlFromTokens(self, tokens):
-        html = HtmlBuilder()
-        html.initaliseHtml(str(os.path.basename(self.path)).split(".")[0], "", self.stylePath, self.assetFolder)
+        html = HtmlBuilder(self.FileName_NoExt)
+        html.initaliseHtml(self.stylePath, self.assetFolder)
+        html.ImportMathJax()
 
         # Title bar
         html.startDiv(id="container")
-        html.appendRawText(f"<div id=\"TitleBar\"><h1 class=\"nopad\">{str(os.path.basename(self.path)).split(".")[0]}</h1></div>")
+        html.appendRawText(f"<div id=\"TitleBar\"><h1 class=\"nopad\">{self.FileName_NoExt}</h1></div>")
+        html.hr()
 
         tokens = self.JoinMultilineTokens(tokens)
 
@@ -169,47 +173,83 @@ class Markdown:
         return newTokenList
 
     def convert_inline_formatting(self, text):
-        if "```" in text:
-            text = re.sub(r"```(.*?)```", r"<pre><code>\1</code></pre>", text, flags=re.DOTALL)
+        text = self.HandleLinksAndImages(text)
 
-        # Handle Double-Dollar Maths FIRST ($$maths block$$ → \[maths block\])
-        text = re.sub(r"\$\$(.*?)\$\$", r"\\[\1\\]", text, flags=re.DOTALL)
+        # Handle Double-Dollar Maths FIRST
+        text, MathsBlocks = self.HandleBlockMaths(text)
+        text, InlineMaths = self.HandleInlineMaths(text)        
+        text = self.HandleBoldAndItallic(text)
 
-        # Handle Single-Dollar Maths ($maths$ → \(maths\))
-        text = re.sub(r"(?<!\$)\$(.*?)(?<!\$)\$", r"\\(\1\\)", text)
+        text = self.restoreBlockMaths(text, MathsBlocks)
+        text = self.restoreInlineMaths(text, InlineMaths)
+        text = self.HandleCodeBlocks(text)
 
+        return text
+    def HandleCodeBlocks(self, text):
+        return re.sub(r"```(.*?)```", r"<pre><code>\1</code></pre>", text, flags=re.DOTALL)
+    def HandleBlockMaths(self, text):
+        MathsBlocks = []
+
+        def replacement_block(match:re.Match):
+            MathsBlocks.append(match.group(0))
+            return f"((==MATHS_BLOCK_{len(MathsBlocks)-1}==))"
+        
+        text = re.sub(r"\$\$(.*?)\$\$", replacement_block, text, flags=re.DOTALL)
+        return text, MathsBlocks
+        # text = re.sub(r"\$\$(.*?)\$\$", r"\\[\1\\]", text, flags=re.DOTALL)
+    def HandleInlineMaths(self, text):
+        InlineMaths = []
+
+        def replacement_block(match:re.Match):
+            InlineMaths.append(match.group(0))
+            return f"((==INLINE_MATHS_{len(InlineMaths)-1}==))"
+        
+        text = re.sub(r"(?<!\$)\$(.*?)(?<!\\)\$", replacement_block, text)
+        return text, InlineMaths
+        # text = re.sub(r"(?<!\$)\$(.*?)(?<!\$)\$", r"\\(\1\\)", text)
+    def HandleBoldAndItallic(self, text):
         text = re.sub(r"\*\*(.*?)\*\*", r"<b>\1</b>", text)
         text = re.sub(r"\*(.*?)\*", r"<i>\1</i>", text)
 
-        text = re.sub(r"`(.*?)`", r"<code>\1</code>", text)
+        return text
+    def HandleLinksAndImages(self, text):
         text = re.sub(r"!\[\[(.*?)\]\]", r'<br><img src="\1" alt="\1"/><br>', text)
         text = re.sub(r"(?<!\!)\[(.*?)\]\((.*?)\)", r'<a href="\2">\1</a>', text)
 
+        return text
+    def restoreBlockMaths(self, text:str, MathsBlocks):
+        for i in range(len(MathsBlocks)):
+            maths = fr"\[{MathsBlocks[i][2:-2].strip()}\]"
+            text = text.replace(f"((==MATHS_BLOCK_{i}==))", maths)
+
+        return text
+    def restoreInlineMaths(self, text, InlineMaths):
+        for i in range(len(InlineMaths)):
+            maths = fr"\({InlineMaths[i][1:-1].strip()}\)"
+            text = text.replace(f"((==INLINE_MATHS_{i}==))", maths)
 
         return text
 
- 
 def _script():
-    if len(sys.argv) == 2:
-        md = Markdown(sys.argv[1])
-        html = md.GetHtml()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("file_path", help="The filepath to the markdown file you would like to parse to HTML")
+    parser.add_argument("-s", "--style_path", help="Specify a path to a css stylesheet to be included in the header. (If using -a, path should be from there)")
+    parser.add_argument("-a", "--asset_folder", help="Specify the path to a base folder for assets")
+    args = parser.parse_args()
 
-        with open(os.path.splitext(sys.argv[1])[0]+'.html', "w+") as f:
-            f.write(html)
-    
-    elif len(sys.argv) == 3:
-        md = Markdown(sys.argv[1], sys.argv[2])
-        html = md.GetHtml()
-
-        with open(os.path.splitext(sys.argv[1])[0]+'.html', "w+") as f:
-            f.write(html)
-
-    elif len(sys.argv) == 4:
-        md = Markdown(sys.argv[1], sys.argv[2], sys.argv[3])
-        html = md.GetHtml()
-
-        with open(os.path.splitext(sys.argv[1])[0]+'.html', "w+") as f:
-            f.write(html)
-
+    md = None
+    if args.style_path and args.asset_folder:
+        md = Markdown(args.file_path, args.asset_folder, args.style_path)
+    elif args.style_path:
+        md = Markdown(args.file_path, None, args.style_path)
+    elif args.asset_folder:
+        md = Markdown(args.file_path, args.asset_folder)
     else:
-        print("Expected argument InputFile with optional AssetFolder and StyleFilePath")
+        md = Markdown(args.file_path)
+
+    if type(md) == Markdown:
+        html = md.GetHtml()
+        with open(os.path.splitext(args.file_path)[0]+'.html', "w+") as f:
+            f.write(html)
+    else:
+        print("An error has occured.")

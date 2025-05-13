@@ -1,5 +1,5 @@
 """
-LibSrd 1.1.0
+LibSrd 1.2.0
 ==================
 Sam Davis
 
@@ -18,7 +18,16 @@ Will convert all images of ```InitalFormat``` in current directory to ```FinalFo
 Will convert a markdown file to a html file.  
 
 5. ```pdfresize```  
-Will resize the all pdf's in current directory to a4. 
+Will resize the all pdf's in current directory to a4.
+
+
+Classes
+---------------
+1. Table  
+A custom TSV reading and writing table class, that can read, write and parse.  
+
+1. HtmlBuilder  
+A very nice html building class, that is used to programatically build html files.  
 """
 
 from libsrd.__version__ import __version__
