@@ -1,5 +1,5 @@
 """
-LibSrd 1.2.0
+LibSrd 1.2.1
 ==================
 Sam Davis
 
