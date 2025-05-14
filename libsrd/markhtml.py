@@ -14,10 +14,14 @@ class Markdown:
         self.path = path
         self.FileName_NoExt = os.path.splitext(os.path.basename(self.path))[0]
 
+        self.createTableOfContents = False
+        self.Headings = [] # (level, text, id)
+
         with open(path, "r") as f:
             self.mdlines = f.readlines()
 
-    def GetHtml(self):
+    def GetHtml(self, createTableOfContents=False):
+        self.createTableOfContents = createTableOfContents
         tokens = self.Tokenise()
         preprocessedHtml = self.HtmlFromTokens(tokens)
         regexHtml = self.convert_inline_formatting(preprocessedHtml)
@@ -50,7 +54,17 @@ class Markdown:
             elif line.startswith("#"):  # heading
                 level = len(line.split(" ")[0])
                 text = line[level:].strip()
-                tokens.append(("heading", level, text))
+                headingId = text.replace(" ", "_")
+                
+                # Make the heading id unique
+                if headingId in [x[2] for x in self.Headings]:
+                    i = 1
+                    while headingId + str(i) in self.Headings:
+                        i += 1
+
+                self.Headings.append((level, text, headingId))
+                tokens.append(("heading", level, text, headingId))
+
 
             else:  # Everything else is a paragraph
                 tokens.append(("paragraph", line))
@@ -67,15 +81,19 @@ class Markdown:
         html.ImportMathJax()
 
         # Title bar
-        html.startDiv(id="container")
-        html.appendRawText(f"<div id=\"TitleBar\"><h1 class=\"nopad\">{self.FileName_NoExt}</h1></div>")
+        html.startDiv(id="__CONTAINER__")
+        html.appendRawText(f"<div id=\"__TITLEBAR__\"><h1 class=\"nopad\">{self.FileName_NoExt}</h1></div>")
+    
+        if self.createTableOfContents:
+            html.p(html.b("Table of Contents"))
+            html.appendRawText(self.GenerateTableOfContents())
+            
         html.hr()
-
         tokens = self.JoinMultilineTokens(tokens)
 
         for token in tokens:
             if token[0] == "heading":
-                html.Heading(token[2], token[1])
+                html.Heading(token[2], token[1], id=token[3])
 
             elif token[0] == "paragraph":
                 p = ""
@@ -230,11 +248,40 @@ class Markdown:
 
         return text
 
+    def GenerateTableOfContents(self):
+        # Personally I really like this code - 14/05/2025
+        html = []
+        stack  = [0]
+
+        for level, text, id in self.Headings:
+            # Close lists if we're going up
+            while stack[-1] != 0 and stack[-1] > level:
+                html.append('</ul>') 
+                stack.pop()
+
+            # Open new <ul> if going deeper
+            initalLevel = stack[-1]
+            for i in range(level-stack[-1]):
+                level = initalLevel + (i+1)
+
+                html.append(f'<ul class="__TOC_UL__ __LEVEL_{level}__">')
+                stack.append(level)
+
+            html.append(f'<li class="__TOC_LI__ __LEVEL_{level}__"><a class="__TOC__A__ __LEVEL_{level}__" href="#{id}">{text}</a></li>')
+
+        while stack[-1] != 0:
+            html.append("</ul>")
+            stack.pop()
+
+        return f'<div id="__TABLEOFCONTENTS__">{"\n".join(html)}</div>'
+
+
 def _script():
     parser = argparse.ArgumentParser()
     parser.add_argument("file_path", help="The filepath to the markdown file you would like to parse to HTML")
     parser.add_argument("-s", "--style_path", help="Specify a path to a css stylesheet to be included in the header. (If using -a, path should be from there)")
     parser.add_argument("-a", "--asset_folder", help="Specify the path to a base folder for assets")
+    parser.add_argument("-t", "--table_of_contents", action="store_true", help="Create a table of contents above the begininning of the document.")
     args = parser.parse_args()
 
     md = None
@@ -248,7 +295,7 @@ def _script():
         md = Markdown(args.file_path)
 
     if type(md) == Markdown:
-        html = md.GetHtml()
+        html = md.GetHtml(args.table_of_contents)
         with open(os.path.splitext(args.file_path)[0]+'.html', "w+") as f:
             f.write(html)
     else:
