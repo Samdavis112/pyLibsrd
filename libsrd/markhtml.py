@@ -8,8 +8,8 @@ import argparse
 class Markdown:
     MultiLineTokens = ["checklist", "ul_item", "ol_item", "blockquote", "table", "paragraph"]
 
-    def __init__(self, path, assetFolderPath=None, stylePath=None):
-        self.assetFolder = assetFolderPath
+    def __init__(self, path, imageFolderPath=None, stylePath=None):
+        self.imageFolderPath = imageFolderPath
         self.stylePath = stylePath
         self.path = path
         self.FileName_NoExt = os.path.splitext(os.path.basename(self.path))[0]
@@ -77,7 +77,7 @@ class Markdown:
 
     def HtmlFromTokens(self, tokens):
         html = HtmlBuilder(self.FileName_NoExt)
-        html.initaliseHtml(self.stylePath, self.assetFolder)
+        html.initaliseHtml(self.stylePath)
         html.ImportMathJax()
 
         # Title bar
@@ -231,7 +231,7 @@ class Markdown:
 
         return text
     def HandleLinksAndImages(self, text):
-        text = re.sub(r"!\[\[(.*?)\]\]", r'<br><img src="\1" alt="\1"/><br>', text)
+        text = re.sub(r"!\[\[(.*?)\]\]", rf'<br><img src="{self.imageFolderPath}\1" alt="\1"/><br>', text)
         text = re.sub(r"(?<!\!)\[(.*?)\]\((.*?)\)", r'<a href="\2">\1</a>', text)
 
         return text
@@ -280,17 +280,17 @@ def _script():
     parser = argparse.ArgumentParser()
     parser.add_argument("file_path", help="The filepath to the markdown file you would like to parse to HTML")
     parser.add_argument("-s", "--style_path", help="Specify a path to a css stylesheet to be included in the header. (If using -a, path should be from there)")
-    parser.add_argument("-a", "--asset_folder", help="Specify the path to a base folder for assets")
+    parser.add_argument("-i", "--image_folder", help="Specify the path to a folder where images are stored")
     parser.add_argument("-t", "--table_of_contents", action="store_true", help="Create a table of contents above the begininning of the document.")
     args = parser.parse_args()
 
     md = None
-    if args.style_path and args.asset_folder:
-        md = Markdown(args.file_path, args.asset_folder, args.style_path)
+    if args.style_path and args.image_folder:
+        md = Markdown(args.file_path, args.image_folder, args.style_path)
     elif args.style_path:
         md = Markdown(args.file_path, None, args.style_path)
-    elif args.asset_folder:
-        md = Markdown(args.file_path, args.asset_folder)
+    elif args.image_folder:
+        md = Markdown(args.file_path, args.image_folder)
     else:
         md = Markdown(args.file_path)
 

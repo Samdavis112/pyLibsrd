@@ -3,15 +3,12 @@ class HtmlBuilder:
         self.htmlDocument = []
         self.DocumentTitle = DocumentTitle
 
-    def initaliseHtml(self, styleFilePath=None, assetFilePath=None):
+    def initaliseHtml(self, styleFilePath=None):
         self.htmlDocument.append('<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">')
         self.htmlDocument.append(f"<title>{self.DocumentTitle}</title>")
 
         if styleFilePath != None:
             self.htmlDocument.append(f'<link rel="stylesheet" type="text/css" href="{styleFilePath}" title="DevEng Style"/>')
-    
-        if assetFilePath != None:
-            self.htmlDocument.append(f'<base href="{assetFilePath}">')
 
         self.htmlDocument.append("</head>")
         self.htmlDocument.append("<body>")
