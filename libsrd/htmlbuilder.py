@@ -3,21 +3,31 @@ class HtmlBuilder:
         self.htmlDocument = []
         self.DocumentTitle = DocumentTitle
 
-    def initaliseHtml(self, styleFilePath=None):
-        self.htmlDocument.append('<!DOCTYPE html>\n<html>\n<head>\n<meta charset="UTF-8">\n<meta name="viewport" content="width=device-width, initial-scale=1.0">')
-        self.htmlDocument.append(f"<title>{self.DocumentTitle}</title>")
+    def initaliseHtml(self, styleFilePath=None, useW3StyleSheet=True):
+        self.htmlDocument.append('<!DOCTYPE html>\n<html>\n\t<head>\n\t<meta charset="UTF-8">\n\t<meta name="viewport" content="width=device-width, initial-scale=1.0">')
+        self.htmlDocument.append(f"\t<title>{self.DocumentTitle}</title>")
+
+        if useW3StyleSheet:
+            self.htmlDocument.append('\t<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">')
 
         if styleFilePath != None:
-            self.htmlDocument.append(f'<link rel="stylesheet" type="text/css" href="{styleFilePath}" title="DevEng Style"/>')
+            self.htmlDocument.append(f'\t<link rel="stylesheet" type="text/css" href="{styleFilePath}" title="DevEng Style"/>')
 
-        self.htmlDocument.append("</head>")
+        self.htmlDocument.append("\t</head>")
         self.htmlDocument.append("<body>")
     
     def ImportMathJax(self):
         importScript = '<script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>'
-        settingsScript = """\nwindow.MathJax = {\n\tloader: {
-        load: ['[tex]/physics', '[tex]/color']\n\t},\n\ttex: {
-        packages: {'[+]': ['physics', 'color']}\n\t}\n};\n"""
+        settingsScript = """\nwindow.MathJax = {
+    loader: {
+        load: ['[tex]/physics', '[tex]/color']
+    },
+    tex: {
+        packages: {
+            '[+]': ['physics', 'color']
+        }
+    }
+};\n"""
         
         self.script(settingsScript)
         self.appendRawText(importScript)
@@ -102,7 +112,7 @@ class HtmlBuilder:
     @staticmethod
     def small(text, **kwargs):
         return (f"<small{HtmlBuilder.convKwargs(**kwargs)}>{text}</small>")
-    
+
     def table(self, ColHeaders, ColAlignments, TableData, **kwargs):
         self._fixColAlignmets(ColAlignments, len(ColHeaders))
 
@@ -138,7 +148,7 @@ class HtmlBuilder:
 
     def GetHtml(self):
         copy = self.htmlDocument.copy()
-        copy.append("</body></html>")
+        copy.append("</body>\n</html>")
         return "\n".join(copy)
 
     def WriteHtml(self, path):

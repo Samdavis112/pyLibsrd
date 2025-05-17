@@ -1,7 +1,6 @@
 import os
 import re
 from libsrd import HtmlBuilder
-#from htmlbuilder import HtmlBuilder # <-- For development.
 import argparse
 
 
@@ -81,14 +80,29 @@ class Markdown:
         html.ImportMathJax()
 
         # Title bar
-        html.startDiv(id="__CONTAINER__")
-        html.appendRawText(f"<div id=\"__TITLEBAR__\"><h1 class=\"nopad\">{self.FileName_NoExt}</h1></div>")
+        html.startDiv(id="__container__")
+        html.appendRawText(f"\n<h1>{self.FileName_NoExt}</h1>\n")
     
         if self.createTableOfContents:
-            html.p(html.b("Table of Contents"))
-            html.appendRawText(self.GenerateTableOfContents())
+            # Add a button to show and hide the TOC
+            html.appendRawText('<div onclick="toc_click()" id="__toc_button__" class="w3-block w3-button" style="background-color: #444; color:white; font-weight: bold;">Table of Contents</div>')
             
-        html.hr()
+            # Add the TOC
+            html.appendRawText(self.GenerateTableOfContents())
+
+            # Add the script to control the visibility
+            html.appendRawText("""<script>
+function toc_click() {
+    var x = document.getElementById('__toc__');
+    if (x.classList.contains("w3-hide")) {
+        x.classList.remove("w3-hide");
+    }
+    else {
+        x.classList.add("w3-hide");
+    }
+}
+</script>\n""")
+            
         tokens = self.JoinMultilineTokens(tokens)
 
         for token in tokens:
@@ -214,7 +228,6 @@ class Markdown:
         
         text = re.sub(r"\$\$(.*?)\$\$", replacement_block, text, flags=re.DOTALL)
         return text, MathsBlocks
-        # text = re.sub(r"\$\$(.*?)\$\$", r"\\[\1\\]", text, flags=re.DOTALL)
     def HandleInlineMaths(self, text):
         InlineMaths = []
 
@@ -254,9 +267,12 @@ class Markdown:
         stack  = [0]
 
         for level, text, id in self.Headings:
+            if level > 3:
+                continue
+
             # Close lists if we're going up
             while stack[-1] != 0 and stack[-1] > level:
-                html.append('</ul>') 
+                html.append('</ol>') 
                 stack.pop()
 
             # Open new <ul> if going deeper
@@ -264,16 +280,16 @@ class Markdown:
             for i in range(level-stack[-1]):
                 level = initalLevel + (i+1)
 
-                html.append(f'<ul class="__TOC_UL__ __LEVEL_{level}__">')
+                html.append(f'<ol class="__toc_ol__ __lvl_{level}__">')
                 stack.append(level)
 
-            html.append(f'<li class="__TOC_LI__ __LEVEL_{level}__"><a class="__TOC__A__ __LEVEL_{level}__" href="#{id}">{text}</a></li>')
+            html.append(f'<li class="__toc_li__ __lvl_{level}__"><a class="__toc__a__ __lvl_{level}__" href="#{id}">{text}</a></li>')
 
         while stack[-1] != 0:
-            html.append("</ul>")
+            html.append("</ol>")
             stack.pop()
 
-        return f'<div id="__TABLEOFCONTENTS__">{"\n".join(html)}</div>'
+        return f'<div id="__toc__" class="w3-hide w3-animate-top w3-container">\n{"\n".join(html)}\n</div>'
 
 
 def _script():

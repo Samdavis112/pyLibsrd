@@ -1,5 +1,5 @@
 """
-LibSrd 1.3.1
+LibSrd 1.3.2
 ==================
 Sam Davis
 
@@ -26,7 +26,7 @@ Classes
 1. Table  
 A custom TSV reading and writing table class, that can read, write and parse.  
 
-1. HtmlBuilder  
+2. HtmlBuilder  
 A very nice html building class, that is used to programatically build html files.   
 """
 
