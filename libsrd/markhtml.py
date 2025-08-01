@@ -41,8 +41,8 @@ class Markdown:
             elif line.startswith("- ") or line.startswith("* "):  # Unordered List
                 tokens.append(("ul_item", line[2:]))
 
-            elif len(line) > 0 and line[0].isdigit() and line[1] == ".":  # Ordered List
-                tokens.append(("ol_item", line[2:]))
+            elif len(line) > 2 and line[0].isdigit() and line[1] == ".":  # Ordered List
+                tokens.append(("ol_item", line[2:])) # Wont fail if string is only 2 long, due to slicing behaviour.
 
             elif line.startswith("> "):  # Blockquote
                 tokens.append(("blockquote", line[2:]))
@@ -56,14 +56,17 @@ class Markdown:
                 headingId = text.replace(" ", "_")
                 
                 # Make the heading id unique
+                i = 0
                 if headingId in [x[2] for x in self.Headings]:
                     i = 1
                     while headingId + str(i) in self.Headings:
                         i += 1
 
+                if i != 0:
+                    headingId += str(i)
+
                 self.Headings.append((level, text, headingId))
                 tokens.append(("heading", level, text, headingId))
-
 
             else:  # Everything else is a paragraph
                 tokens.append(("paragraph", line))
@@ -303,10 +306,10 @@ def _script():
     md = None
     if args.style_path and args.image_folder:
         md = Markdown(args.file_path, args.image_folder, args.style_path)
-    elif args.style_path:
-        md = Markdown(args.file_path, None, args.style_path)
     elif args.image_folder:
         md = Markdown(args.file_path, args.image_folder)
+    elif args.style_path:
+        md = Markdown(args.file_path, None, args.style_path)
     else:
         md = Markdown(args.file_path)
 
