@@ -1,11 +1,11 @@
 """
-LibSrd 1.3.2
+pyLibSrd 1.3.2
 ==================
 Sam Davis
 
 Commands
 ------------------
-1. ```libsrd```
+1. ```pylibsrd```
 Displays the commands available in libsrd.  
 
 2. ```mergepdfs```  
@@ -30,14 +30,15 @@ A custom TSV reading and writing table class, that can read, write and parse.
 A very nice html building class, that is used to programatically build html files.   
 """
 
-from libsrd.__version__ import __version__
-from libsrd.htmlbuilder import HtmlBuilder
-from libsrd.image_convert import convert_images
-from libsrd.markhtml import Markdown
-from libsrd.merge_pdf import merge_pdfs
-from libsrd.pdf_resizer import resize_pdfs
-from libsrd.table import Table
+from pylibsrd.__version__ import __version__
+from pylibsrd.htmlbuilder import HtmlBuilder
+from pylibsrd.image_convert import convert_images
+from pylibsrd.markhtml import Markdown
+from pylibsrd.merge_pdf import merge_pdfs
+from pylibsrd.pdf_resizer import resize_pdfs
+from pylibsrd.table import Table
 
 
 def _script():
+
 	print(__doc__.replace("```", ""))
