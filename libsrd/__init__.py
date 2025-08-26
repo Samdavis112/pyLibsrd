@@ -1,5 +1,5 @@
 """
-pyLibSrd 1.3.2
+pylibSrd 1.3.2
 ==================
 Sam Davis
 
@@ -42,3 +42,4 @@ from pylibsrd.table import Table
 def _script():
 
 	print(__doc__.replace("```", ""))
+
