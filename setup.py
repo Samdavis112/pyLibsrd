@@ -6,13 +6,13 @@ from setuptools import find_packages, setup
 # exec() is a clever function that reads the file to string, then runs that string as python code.
 # This lets me pull the version number on demand.
 __version__ = None
-exec(open('libsrd/__version__.py').read()) 
+exec(open('pyLibsrd/__version__.py').read()) 
 long_desc = open("README").read()
 
 setup(
-	name="libsrd",
+	name="pyLibsrd",
 	version=f"{__version__}",
-	description="LibSrd is a library containing my modules I use repeatedly.",
+	description="pyLibSrd is a library containing my modules I use repeatedly.",
 	long_description=long_desc,
 	author="Sam Davis",
 	author_email="srd076@icloud.com",
@@ -22,14 +22,15 @@ setup(
 		"tabulate",
 		"pypdf"
 	],
-	url="https://github.com/Samdavis112/libsrd",
+	url="https://github.com/Samdavis112/pyLibsrd",
 	entry_points={
 		'console_scripts': [
-			'libsrd = libsrd.__init__:_script',
-			'mergepdfs = libsrd.merge_pdf:_script',
-			'imgconvert = libsrd.image_convert:_script',
-            'markhtml = libsrd.markhtml:_script',
-            'pdfresize = libsrd.pdf_resizer:_script'
+			'pylibsrd = pylibsrd.__init__:_script',
+			'mergepdfs = pylibsrd.merge_pdf:_script',
+			'imgconvert = pylibsrd.image_convert:_script',
+            'markhtml = pylibsrd.markhtml:_script',
+            'pdfresize = pylibsrd.pdf_resizer:_script'
 		],
 	},
+
 )
