@@ -1,6 +1,6 @@
 import os
 import re
-from libsrd import HtmlBuilder
+from pylibsrd import HtmlBuilder
 import argparse
 
 
