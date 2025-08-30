@@ -8,7 +8,7 @@ class HtmlBuilder:
         self.htmlDocument.append(f"\t<title>{self.DocumentTitle}</title>")
 
         if useW3StyleSheet:
-            self.htmlDocument.append('\t<link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">')
+            self.htmlDocument.append('\t<link rel="stylesheet" href="https://www.w3schools.com/lib/w3.css">')
 
         if styleFilePath != None:
             self.htmlDocument.append(f'\t<link rel="stylesheet" type="text/css" href="{styleFilePath}" title="DevEng Style"/>')

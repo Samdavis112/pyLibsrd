@@ -6,7 +6,7 @@
 # Python Builds
 build/
 dist/
-libsrd.egg-info/
+pylibsrd.egg-info/
 
 # User-specific files
 *.rsuser
