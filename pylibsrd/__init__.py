@@ -1,5 +1,5 @@
 """
-pylibSrd 1.3.2
+pylibSrd 1.3.3
 ==================
 Sam Davis
 
